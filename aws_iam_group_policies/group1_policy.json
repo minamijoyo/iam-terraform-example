@@ -1,11 +1,55 @@
 {
     "Version": "2012-10-17",
-    "Statement": {
-        "Effect": "Allow",
-        "Action": [
-            "iam:ChangePassword",
-            "iam:GetAccountPasswordPolicy"
-        ],
-        "Resource": "*"
-    }
+    "Statement": [
+        {
+            "Sid": "AllowUsersToChangeTheirOwnPassword",
+            "Effect": "Allow",
+            "Action": [
+                "iam:ChangePassword",
+                "iam:GetAccountPasswordPolicy"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "AllowUsersToCreateEnableResyncTheirOwnVirtualMFADevice",
+            "Effect": "Allow",
+            "Action": [
+                "iam:CreateVirtualMFADevice",
+                "iam:EnableMFADevice",
+                "iam:ResyncMFADevice"
+            ],
+            "Resource": [
+                "arn:aws:iam::105883753613:mfa/${aws:username}",
+                "arn:aws:iam::105883753613:user/${aws:username}"
+            ]
+        },
+        {
+            "Sid": "AllowUsersToDeactivateDeleteTheirOwnVirtualMFADevice",
+            "Effect": "Allow",
+            "Action": [
+                "iam:DeactivateMFADevice",
+                "iam:DeleteVirtualMFADevice"
+            ],
+            "Resource": [
+                "arn:aws:iam::105883753613:mfa/${aws:username}",
+                "arn:aws:iam::105883753613:user/${aws:username}"
+            ],
+            "Condition": {
+                "Bool": {
+                    "aws:MultiFactorAuthPresent": true
+                }
+            }
+        },
+        {
+            "Sid": "AllowUsersToListMFADevicesAndUsersFromConsole",
+            "Effect": "Allow",
+            "Action": [
+                "iam:ListMFADevices",
+                "iam:ListVirtualMFADevices",
+                "iam:ListUsers"
+            ],
+            "Resource": "*"
+        }
+    ]
 }
+
